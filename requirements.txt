@@ -1,0 +1,11 @@
+keras==2.6.0
+matplotlib==3.5.1
+numpy==1.22.2
+opencv_python_headless==4.5.5.64
+pandas==1.4.1
+scikit_learn==1.1.1
+scipy==1.7.3
+streamlit==1.6.0
+streamlit_option_menu==0.3.2
+tensorflow==2.6.0
+xgboost==1.6.1
