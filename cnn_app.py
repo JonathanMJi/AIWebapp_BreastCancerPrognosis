@@ -93,16 +93,30 @@ def main():
         c9, c10 = st.columns(2)
         
 
-        age_at_diagnosis = c1.text_input("Age At Diagnosis", "")
-        overall_survival_months = c2.text_input("Overall Survival Months","")
-        lymph_nodes_examined_positive = c3.text_input("Positive Lymph Nodes","")
-        tumor_size = c4.text_input("Tumor Size", "")
-        tumor_stage = c5.text_input("Tumor Stage", "")
-        brca1 = c6.text_input("brca1", "")
-        brca2 = c7.text_input("brca2", "")
-        tp53 = c8.text_input("tp53","")
-        pten = c9.text_input("pten","")
-        egfr = c10.text_input("egfr", "")
+        c1, c2 = st.columns(2)
+        age_at_diagnosis = c1.text_input("Age at Diagnosis (Numeric only)","85", key="age")
+        overall_survival_months = c2.text_input("Overall Survival Months (Numeric only)", "15", key="month")
+        #st.write(age_at_diagnosis, overall_survival_months)
+
+        c3, c4 = st.columns(2)
+        lymph_nodes_examined_positive = c3.text_input("Positive Lymph Nodes number (Numeric only)", "10", key="lymph")
+        tumor_size = c4.text_input("Tumor Size millimeter (Numeric only)", "22", key="size")
+        #st.write(lymph_nodes_examined_positive, tumor_size)
+
+        c5, c6 = st.columns(2)
+        tumor_stage = c5.text_input("Tumor Stage (0, 1, 2, 3, 4)","4",key="stage")
+        brca1 = c6.text_input("brca1 (Postive or negative number)","-0.5", key="brca1")
+        #st.write(tumor_stage, brca1)
+
+        c7, c8 = st.columns(2)
+        brca2 = c7.text_input("brca2 (Postive or negative number)","-0.4", key="brca2")
+        tp53 = c8.text_input("tp53 (Postive or negative number)","-0.7", key="tp53")
+        #st.write(brca2, tp53)
+
+        c9, c10 = st.columns(2)
+        pten = c9.text_input("pten (Postive or negative number)","-0.67", key="pten")
+        egfr = c10.text_input("egfr (Postive or negative number)","-0.6", key="egfr")
+        #st.write(pten, egfr)
 
         living_html = """
         <div style="background-color:#F08080;padding:10px">
