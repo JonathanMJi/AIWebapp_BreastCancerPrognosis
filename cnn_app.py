@@ -59,7 +59,7 @@ def draw_plot():
             ax.set_ylabel('True positive rate')
             ax.set_title('ROC curve for CNN model')
             
-            variable_output = 'CNN (area = {:.3f})'.format(auc_keras)
+            variable_output = 'AUC (Area Under Curve) = {:.3f}'.format(auc_keras)
             
             html_str = f"""  
             <h3 style="text-align: center; color: green;">{variable_output}</h3>
@@ -81,7 +81,8 @@ def main():
     if selected == "Prediction":
         html_temp = """
         <div style="background-color:#025246 ;padding:10px">
-        <h2 style="color:white;text-align:center;">CNN</h2>
+        <h2 style="color:white;text-align:center;">Deep Learning Model</h2>
+        <h5 style="color:white;text-align:center;">This model utilizes CNN (Convolutional Neural Networks) for breast cancer prognosis.</h5>
         </div>
         """
         st.markdown(html_temp, unsafe_allow_html=True)
@@ -99,8 +100,8 @@ def main():
         #st.write(age_at_diagnosis, overall_survival_months)
 
         c3, c4 = st.columns(2)
-        lymph_nodes_examined_positive = c3.text_input("Positive Lymph Nodes number (Numeric only)", "10", key="lymph")
-        tumor_size = c4.text_input("Tumor Size millimeter (Numeric only)", "22", key="size")
+        lymph_nodes_examined_positive = c3.text_input("Positive Lymph Nodes (Numeric only)", "10", key="lymph")
+        tumor_size = c4.text_input("Tumor Size in milimeters (Numeric only)", "22", key="size")
         #st.write(lymph_nodes_examined_positive, tumor_size)
 
         c5, c6 = st.columns(2)
@@ -145,7 +146,15 @@ def main():
                 st.markdown(death_html, unsafe_allow_html=True)
             else:
                 st.markdown(living_html, unsafe_allow_html=True)
-
+        
+        help_html = """
+        <div style="background-color:#025246 ;padding:20px">
+        <h5 style="color:white;;text-align:center;">What do these numbers mean?</h5>
+        <p style="color:white">The value for Positive Lymph Nodes represent the number of lymph nodes that have tested positive for cancer.</p>
+        <p style="color:white">The values for brca1, brca2, tp53, pten, and egfr represent mRNA changes in the respective genes relative to healthy tissue as according to test results. These values are represented in log 2.</p>
+        </div>
+        """
+        st.markdown(help_html, unsafe_allow_html=True)
     if selected == "Contact":
         
         contact_form = """
@@ -177,6 +186,16 @@ def main():
         st.markdown(html_temp, unsafe_allow_html=True)
 
         draw_plot()
+
+        help_html = """
+        <div style="background-color:#025246 ;padding:20px">
+        <h5 style="color:white;;text-align:center;">What does this mean?</h5>
+        <p style="color:white">An ROC curve plots the true positive rate against the false positive rate for a model. Finding the area of an ROC curve, or AUC, is one way we can determine a model's predicting power.</p>
+        <p style="color:white">Our model's ROC curve, represented by the blue line, has an area of 0.902, indicating a powerful predicting tool for breast cancer prognosis.</p>
+        </div>
+        """
+        st.markdown(help_html, unsafe_allow_html=True)
+
 
 
 
