@@ -8,4 +8,3 @@ scipy==1.7.3
 streamlit==1.6.0
 streamlit_option_menu==0.3.2
 tensorflow==2.6.0
-xgboost==1.6.1
