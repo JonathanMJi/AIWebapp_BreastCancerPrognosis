@@ -106,17 +106,17 @@ def main():
 
         c5, c6 = st.columns(2)
         tumor_stage = c5.text_input("Tumor Stage (0, 1, 2, 3, 4)","4",key="stage")
-        brca1 = c6.text_input("brca1 (Postive or negative number)","-0.5", key="brca1")
+        brca1 = c6.text_input("BRCA1 (Postive or negative number)","-0.5", key="brca1")
         #st.write(tumor_stage, brca1)
 
         c7, c8 = st.columns(2)
-        brca2 = c7.text_input("brca2 (Postive or negative number)","-0.4", key="brca2")
-        tp53 = c8.text_input("tp53 (Postive or negative number)","-0.7", key="tp53")
+        brca2 = c7.text_input("BRCA2 (Postive or negative number)","-0.4", key="brca2")
+        tp53 = c8.text_input("TP53 (Postive or negative number)","-0.7", key="tp53")
         #st.write(brca2, tp53)
 
         c9, c10 = st.columns(2)
         pten = c9.text_input("pten (Postive or negative number)","-0.67", key="pten")
-        egfr = c10.text_input("egfr (Postive or negative number)","-0.6", key="egfr")
+        egfr = c10.text_input("EGFR (Postive or negative number)","-0.6", key="egfr")
         #st.write(pten, egfr)
 
         living_html = """
