@@ -151,7 +151,7 @@ def main():
         <div style="background-color:#025246 ;padding:20px">
         <h5 style="color:white;;text-align:center;">What do these numbers mean?</h5>
         <p style="color:white">The value for Positive Lymph Nodes represent the number of lymph nodes that have tested positive for cancer.</p>
-        <p style="color:white">The values for brca1, brca2, tp53, pten, and egfr represent mRNA changes in the respective genes relative to healthy tissue as according to test results. These values are represented in log 2.</p>
+        <p style="color:white">The values for BRCA1, BRCA2, TP53, PTEN, and EGFR represent changes in mRNA level of the respective genes in a breast tumor relative to healthy tissue, based on RNA-sequencing results. These values are represented in log 2.</p>
         </div>
         """
         st.markdown(help_html, unsafe_allow_html=True)
@@ -165,7 +165,7 @@ def main():
             <input type="text" name = "name" placeholder="Your name" required>
             <input type= "email" name = "email" placeholder= "Your email" required>
             <textarea name = "message" placeholder ="Feedback"></textarea>
-            <button type= "submit">Send</buttom>
+            <button type= "submit">Submit</buttom>
         </form>
         """
         st.markdown(contact_form, unsafe_allow_html=True)
