@@ -115,7 +115,7 @@ def main():
         #st.write(brca2, tp53)
 
         c9, c10 = st.columns(2)
-        pten = c9.text_input("pten (Postive or negative number)","-0.67", key="pten")
+        pten = c9.text_input("PTEN (Postive or negative number)","-0.67", key="pten")
         egfr = c10.text_input("EGFR (Postive or negative number)","-0.6", key="egfr")
         #st.write(pten, egfr)
 
