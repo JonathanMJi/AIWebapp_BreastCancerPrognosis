@@ -7,6 +7,7 @@ from sklearn.metrics import roc_curve
 from sklearn.metrics import auc
 from matplotlib import pyplot as plt
 from sklearn.model_selection import train_test_split
+import base64
 
 model = tf.keras.models.load_model('BreastCancer_DL.h5')
 
@@ -69,12 +70,11 @@ def draw_plot():
             st.pyplot(fig)
 
 def main():
-    st.title("AI Breast Cancer Prognosis Tool")
-
+    st.title("AI Breast Cancer Prognosis App")
     with st.sidebar:
         selected = option_menu(
             menu_title="",
-            options=["Prediction", "ROC Curve", "Contact"],
+            options=["Prediction",  "ROC Curve", "Dataset", "Contact"],
             default_index=0,
             styles={
                 "container":{"padding" : "0!important", "background-color" : "#fafafa"},
@@ -84,47 +84,9 @@ def main():
             }
         )
 
+    
     if selected == "Prediction":
-        html_temp = """
-        <div style="background-color:#025246 ;padding:10px">
-        <h2 style="color:white;text-align:center;">Deep Learning Model</h2>
-        <h5 style="color:white;text-align:center;">This model utilizes CNN (Convolutional Neural Networks) for breast cancer prognosis.</h5>
-        </div>
-        """
-        st.markdown(html_temp, unsafe_allow_html=True)
-
-        c1, c2 = st.columns(2)
-        c3, c4 = st.columns(2)
-        c5, c6 = st.columns(2)
-        c7, c8 = st.columns(2)
-        c9, c10 = st.columns(2)
         
-
-        c1, c2 = st.columns(2)
-        age_at_diagnosis = c1.text_input("Age at Diagnosis (Numeric only)","85", key="age")
-        overall_survival_months = c2.text_input("Overall Survival Months (Numeric only)", "15", key="month")
-        #st.write(age_at_diagnosis, overall_survival_months)
-
-        c3, c4 = st.columns(2)
-        lymph_nodes_examined_positive = c3.text_input("Positive Lymph Nodes (Numeric only)", "10", key="lymph")
-        tumor_size = c4.text_input("Tumor Size in milimeters (Numeric only)", "22", key="size")
-        #st.write(lymph_nodes_examined_positive, tumor_size)
-
-        c5, c6 = st.columns(2)
-        tumor_stage = c5.text_input("Tumor Stage (0, 1, 2, 3, 4)","4",key="stage")
-        brca1 = c6.text_input("BRCA1 (Postive or negative number)","-0.5", key="brca1")
-        #st.write(tumor_stage, brca1)
-
-        c7, c8 = st.columns(2)
-        brca2 = c7.text_input("BRCA2 (Postive or negative number)","-0.4", key="brca2")
-        tp53 = c8.text_input("TP53 (Postive or negative number)","-0.7", key="tp53")
-        #st.write(brca2, tp53)
-
-        c9, c10 = st.columns(2)
-        pten = c9.text_input("PTEN (Postive or negative number)","-0.67", key="pten")
-        egfr = c10.text_input("EGFR (Postive or negative number)","-0.6", key="egfr")
-        #st.write(pten, egfr)
-
         living_html = """
         <div style="background-color:#F08080;padding:10px">
         <h2 style="color:white;text-align:center;">High Risk</h2>
@@ -137,32 +99,141 @@ def main():
         </div>
         """
 
-        s = f"""
-        <style>
-        div.stButton > button:first-child {{ background-color: #04AA6D;color: white; padding: 12px 20px;border: none;border-radius: 4px;cursor: pointer; }}
-        <style>
-        """
-        st.markdown(s, unsafe_allow_html=True)
-        if st.button("Predict"):
-            output=predict_survival(age_at_diagnosis, overall_survival_months,lymph_nodes_examined_positive, tumor_size, tumor_stage, brca1, brca2, tp53,pten, egfr)
-        
-            st.success('The probability of survival is {}'.format(output))
-
-            if output > .5:
-                st.markdown(death_html, unsafe_allow_html=True)
-            else:
-                st.markdown(living_html, unsafe_allow_html=True)
-        
-        help_html = """
-        <div style="background-color:#025246 ;padding:20px">
-        <h5 style="color:white;;text-align:center;">What do these numbers mean?</h5>
-        <p style="color:white">The value for Positive Lymph Nodes represent the number of lymph nodes that have tested positive for cancer.</p>
-        <p style="color:white">The values for BRCA1, BRCA2, TP53, PTEN, and EGFR represent changes in mRNA level of the respective genes in a breast tumor relative to healthy tissue, based on RNA-sequencing results. These values are represented in log 2.</p>
+        html_temp = """
+        <div style="background-color:#025246 ;padding:10px">
+        <h2 style="color:white;text-align:center;">Deep Learning Model</h2>
+        <h5 style="color:white;text-align:center;">This model utilizes CNN (Convolutional Neural Networks) for breast cancer prognosis prediction.</h5>
         </div>
         """
-        st.markdown(help_html, unsafe_allow_html=True)
+
+        st.markdown(html_temp, unsafe_allow_html=True)
+
+        st.text("")
+
+        prediction_selected = option_menu(
+            menu_title="",
+            options=["Predict with Key Values", "Predict with Uploaded File"],
+            default_index=0,
+            orientation="horizontal",
+            styles={
+                "container":{"padding" : "0!important", "background-color" : "#fafafa"},
+                "icon":{"color":"orange","font-size":"15px"},
+                "nav-link":{"font-size":"15px","text-align":"left","margin":"0px","--hover-color":"#40FFCC"},
+                "nav-link-selected":{"background-color":"#27A180"},
+            }
+        )
+        
+        if prediction_selected == "Predict with Key Values":
+
+            c1, c2 = st.columns(2)
+            age_at_diagnosis = c1.text_input("Age at Diagnosis (Numeric only)","85", key="age")
+            overall_survival_months = c2.text_input("Overall Survival Months (Numeric only)", "15", key="month")
+            #st.write(age_at_diagnosis, overall_survival_months)
+
+            c3, c4 = st.columns(2)
+            lymph_nodes_examined_positive = c3.text_input("Positive Lymph Nodes (Numeric only)", "10", key="lymph")
+            tumor_size = c4.text_input("Tumor Size in milimeters (Numeric only)", "22", key="size")
+            #st.write(lymph_nodes_examined_positive, tumor_size)
+
+            c5, c6 = st.columns(2)
+            tumor_stage = c5.text_input("Tumor Stage (0, 1, 2, 3, 4)","4",key="stage")
+            brca1 = c6.text_input("BRCA1 (Postive or negative number)","-0.5", key="brca1")
+            #st.write(tumor_stage, brca1)
+
+            c7, c8 = st.columns(2)
+            brca2 = c7.text_input("BRCA2 (Postive or negative number)","-0.4", key="brca2")
+            tp53 = c8.text_input("TP53 (Postive or negative number)","-0.7", key="tp53")
+            #st.write(brca2, tp53)
+
+            c9, c10 = st.columns(2)
+            pten = c9.text_input("PTEN (Postive or negative number)","-0.67", key="pten")
+            egfr = c10.text_input("EGFR (Postive or negative number)","-0.6", key="egfr")
+            #st.write(pten, egfr)
+
+            s = f"""
+            <style>
+            div.stButton > button:first-child {{ background-color: #04AA6D;color: white; padding: 12px 20px;border: none;border-radius: 4px;cursor: pointer; }}
+            <style>
+            """
+            st.markdown(s, unsafe_allow_html=True)
+            if st.button("Predict"):
+                output=predict_survival(age_at_diagnosis, overall_survival_months,lymph_nodes_examined_positive, tumor_size, tumor_stage, brca1, brca2, tp53,pten, egfr)
+            
+                st.success('The probability of survival is {}'.format(output))
+
+                if output > .5:
+                    st.markdown(death_html, unsafe_allow_html=True)
+                else:
+                    st.markdown(living_html, unsafe_allow_html=True)
+
+            help_html = """
+                <div style="background-color:#025246 ;padding:20px">
+                <h5 style="color:white;;text-align:center;">What do these numbers mean?</h5>
+                <p style="color:white">The value for Positive Lymph Nodes represent the number of lymph nodes that have tested positive for cancer.</p>
+                <p style="color:white">The values for BRCA1, BRCA2, TP53, PTEN, and EGFR represent changes in mRNA level of the respective genes in a breast tumor relative to healthy tissue, based on RNA-sequencing results. These values are represented in log 2.</p>
+                </div>
+            """   
+            st.markdown(help_html, unsafe_allow_html=True)
+     
+        if prediction_selected == "Predict with Uploaded File":
+            df1=pd.read_csv("PatientSample_1.csv")
+            csv1 = df1.to_csv(index=False)
+            b64_a = base64.b64encode(csv1.encode()).decode()  # some strings <-> bytes conversions necessary here
+            href1 = f'<a href="data:file/csv;base64,{b64_a}" download="PatientSample_1.csv">Download Sample Patient File (High Risk)</a>'
+            st.markdown(href1, unsafe_allow_html=True)
+
+            df2=pd.read_csv("PatientSample_2.csv")
+            csv2 = df2.to_csv(index=False)
+            b64_b = base64.b64encode(csv2.encode()).decode()  # some strings <-> bytes conversions necessary here
+            href2 = f'<a href="data:file/csv;base64,{b64_b}" download="PatientSample_2.csv">Download Sample Patient File (Low Risk)</a>'
+            st.markdown(href2, unsafe_allow_html=True)
+            
+            uploaded_file = st.file_uploader("This app only accepts .csv files.", type=["csv"])
+            
+            if uploaded_file is not None:
+                df = pd.read_csv(uploaded_file)
+                st.dataframe(df)
+
+                s = f"""
+                <style>
+                div.stButton > button:first-child {{ background-color: #04AA6D;color: white; padding: 12px 20px;border: none;border-radius: 4px;cursor: pointer; }}
+                <style>
+                """
+                st.markdown(s, unsafe_allow_html=True)
+                if st.button("Predict"):
+
+                    #X=df.drop( ['death_from_cancer', 'overall_survival'], axis=1)
+                    TestData = np.asarray(df).astype(np.float32)
+                    prediction = model.predict(TestData)
+                    pred = '{0:.{1}f}'.format(prediction[0][0],2)
+                    output = float(pred)            
+                    st.success('The probability of survival is {}'.format(output))
+
+                    if output > .5:
+                        st.markdown(death_html, unsafe_allow_html=True)
+                    else:
+                        st.markdown(living_html, unsafe_allow_html=True)    
+
+            help_html = """
+            <div style="background-color:#025246 ;padding:20px">
+            <h5 style="color:white;;text-align:center;">How do I use this?</h5>
+            <p style="color:white">This option takes in input from a patient's entire clinical and genetic data in a specific format.</p>
+            <p style="color:white">Sample patient data have been provided for example use and formatting.</p>
+            </div>
+                """   
+            st.markdown(help_html, unsafe_allow_html=True)            
+
+
+        
     if selected == "Contact":
         
+        s = f"""
+            <style>
+            div.stButton > button:first-child {{ background-color: #04AA6D;color: white; padding: 12px 20px;border: none;border-radius: 4px;cursor: pointer; }}
+            <style>
+            """
+        st.markdown(s, unsafe_allow_html=True)
+
         contact_form = """
         <div style="background-color:#025246 ;padding:10px">
         <h2 style="color:white;text-align:center;">Contact</h2>
@@ -202,7 +273,22 @@ def main():
         """
         st.markdown(help_html, unsafe_allow_html=True)
 
+    if selected == "Dataset":
 
+        html_temp = """
+        <div style="background-color:#025246 ;padding:10px">
+        <h2 style="color:white;text-align:center;">Dataset</h2>
+        <p style= "color:white;text-align:center">The dataset used to train this CNN model was accessed from <a href="https://www.cbioportal.org/study/summary?id=brca_metabric" target="_blank">cBioportal</a>.</p>
+
+        </div>
+        """
+        st.markdown(html_temp, unsafe_allow_html=True)
+
+        df=pd.read_csv("METABRIC_RNA_Mutation_Signature.csv")
+        st.markdown("", unsafe_allow_html=True)
+        st.dataframe(df,1000,200)
+
+        
 
 
 if __name__ == '__main__':
