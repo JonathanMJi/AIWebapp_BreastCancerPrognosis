@@ -217,8 +217,8 @@ def main():
             help_html = """
             <div style="background-color:#025246 ;padding:20px">
             <h5 style="color:white;;text-align:center;">How do I use this?</h5>
-            <p style="color:white">This option takes in input from a patient's entire clinical and genetic data in a specific format.</p>
-            <p style="color:white">Sample patient data have been provided for example use and formatting.</p>
+            <p style="color:white">This option takes in a patient's entire clinical and genetic data as a .csv file.</p>
+            <p style="color:white">Sample patient data have been provided to serve as examples for dataset formatting and uploading.</p>
             </div>
                 """   
             st.markdown(help_html, unsafe_allow_html=True)            
