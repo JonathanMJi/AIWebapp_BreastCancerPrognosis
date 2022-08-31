@@ -113,7 +113,7 @@ def main():
         prediction_selected = option_menu(
             menu_title="",
             #options=["Predict with Key Values", "Predict with Uploaded File"],
-            options=["Predict with Uploaded File"],
+            options=["Predict with Uploaded File and use sample fiel as reference"],
             default_index=0,
             orientation="horizontal",
             styles={
