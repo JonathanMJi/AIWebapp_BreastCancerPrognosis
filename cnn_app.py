@@ -113,7 +113,7 @@ def main():
         prediction_selected = option_menu(
             menu_title="",
             #options=["Predict with Key Values", "Predict with Uploaded File"],
-            options=["Upload Patient File and Predict"],
+            options=["Predict with Uploaded File"],
             default_index=0,
             orientation="horizontal",
             styles={
