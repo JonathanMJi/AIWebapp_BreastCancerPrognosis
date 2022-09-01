@@ -108,25 +108,48 @@ def main():
 
         st.markdown(html_temp, unsafe_allow_html=True)
 
-        st.text("")    
-        
-        df1=pd.read_csv("PatientSample_1.csv")
-        csv1 = df1.to_csv(index=False)
-        b64_a = base64.b64encode(csv1.encode()).decode()  # some strings <-> bytes conversions necessary here
-        href1 = f'<a href="data:file/csv;base64,{b64_a}" download="PatientSample_1.csv">Download Sample Patient File (High Risk)</a>'
-        st.markdown(href1, unsafe_allow_html=True)
+        st.text("")
 
-        df2=pd.read_csv("PatientSample_2.csv")
-        csv2 = df2.to_csv(index=False)
-        b64_b = base64.b64encode(csv2.encode()).decode()  # some strings <-> bytes conversions necessary here
-        href2 = f'<a href="data:file/csv;base64,{b64_b}" download="PatientSample_2.csv">Download Sample Patient File (Low Risk)</a>'
-        st.markdown(href2, unsafe_allow_html=True)
-            
-        uploaded_file = st.file_uploader("This app only accepts .csv files.", type=["csv"])
-            
-        if uploaded_file is not None:
-            df = pd.read_csv(uploaded_file)
-            st.dataframe(df)
+        prediction_selected = option_menu(
+            menu_title="",
+            #options=["Predict with Key Values", "Predict with Uploaded File"],
+            options=["Predict with Uploaded File"],
+            default_index=0,
+            orientation="horizontal",
+            styles={
+                "container":{"padding" : "0!important", "background-color" : "#fafafa"},
+                "icon":{"color":"orange","font-size":"15px"},
+                "nav-link":{"font-size":"15px","text-align":"left","margin":"0px","--hover-color":"#40FFCC"},
+                "nav-link-selected":{"background-color":"#27A180"},
+            }
+        )
+        
+        if prediction_selected == "Predict with Key Values":
+
+            c1, c2 = st.columns(2)
+            age_at_diagnosis = c1.text_input("Age at Diagnosis (Numeric only)","85", key="age")
+            overall_survival_months = c2.text_input("Overall Survival Months (Numeric only)", "15", key="month")
+            #st.write(age_at_diagnosis, overall_survival_months)
+
+            c3, c4 = st.columns(2)
+            lymph_nodes_examined_positive = c3.text_input("Positive Lymph Nodes (Numeric only)", "10", key="lymph")
+            tumor_size = c4.text_input("Tumor Size in milimeters (Numeric only)", "22", key="size")
+            #st.write(lymph_nodes_examined_positive, tumor_size)
+
+            c5, c6 = st.columns(2)
+            tumor_stage = c5.text_input("Tumor Stage (0, 1, 2, 3, 4)","4",key="stage")
+            brca1 = c6.text_input("BRCA1 (Postive or negative number)","-0.5", key="brca1")
+            #st.write(tumor_stage, brca1)
+
+            c7, c8 = st.columns(2)
+            brca2 = c7.text_input("BRCA2 (Postive or negative number)","-0.4", key="brca2")
+            tp53 = c8.text_input("TP53 (Postive or negative number)","-0.7", key="tp53")
+            #st.write(brca2, tp53)
+
+            c9, c10 = st.columns(2)
+            pten = c9.text_input("PTEN (Postive or negative number)","-0.67", key="pten")
+            egfr = c10.text_input("EGFR (Postive or negative number)","-0.6", key="egfr")
+            #st.write(pten, egfr)
 
             s = f"""
             <style>
@@ -135,27 +158,71 @@ def main():
             """
             st.markdown(s, unsafe_allow_html=True)
             if st.button("Predict"):
-
-                #X=df.drop( ['death_from_cancer', 'overall_survival'], axis=1)
-                TestData = np.asarray(df).astype(np.float32)
-                prediction = model.predict(TestData)
-                pred = '{0:.{1}f}'.format(prediction[0][0],2)
-                output = float(pred)            
+                output=predict_survival(age_at_diagnosis, overall_survival_months,lymph_nodes_examined_positive, tumor_size, tumor_stage, brca1, brca2, tp53,pten, egfr)
+            
                 st.success('The probability of survival is {}'.format(output))
 
                 if output > .5:
                     st.markdown(death_html, unsafe_allow_html=True)
                 else:
-                    st.markdown(living_html, unsafe_allow_html=True)    
+                    st.markdown(living_html, unsafe_allow_html=True)
 
-        help_html = """
-        <div style="background-color:#025246 ;padding:20px">
-        <h5 style="color:white;;text-align:center;">How do I use this?</h5>
-        <p style="color:white">This option takes in a patient's entire clinical and genetic data as a .csv file.</p>
-        <p style="color:white">Sample patient data have been provided to serve as examples for dataset formatting and uploading.</p>
-        </div>
+            help_html = """
+                <div style="background-color:#025246 ;padding:20px">
+                <h5 style="color:white;;text-align:center;">What do these numbers mean?</h5>
+                <p style="color:white">The value for Positive Lymph Nodes represent the number of lymph nodes that have tested positive for cancer.</p>
+                <p style="color:white">The values for BRCA1, BRCA2, TP53, PTEN, and EGFR represent changes in mRNA level of the respective genes in a breast tumor relative to healthy tissue, based on RNA-sequencing results. These values are represented in log 2.</p>
+                </div>
             """   
-        st.markdown(help_html, unsafe_allow_html=True)            
+            st.markdown(help_html, unsafe_allow_html=True)
+     
+        if prediction_selected == "Predict with Uploaded File":
+            df1=pd.read_csv("PatientSample_1.csv")
+            csv1 = df1.to_csv(index=False)
+            b64_a = base64.b64encode(csv1.encode()).decode()  # some strings <-> bytes conversions necessary here
+            href1 = f'<a href="data:file/csv;base64,{b64_a}" download="PatientSample_1.csv">Download Sample Patient File (High Risk)</a>'
+            st.markdown(href1, unsafe_allow_html=True)
+
+            df2=pd.read_csv("PatientSample_2.csv")
+            csv2 = df2.to_csv(index=False)
+            b64_b = base64.b64encode(csv2.encode()).decode()  # some strings <-> bytes conversions necessary here
+            href2 = f'<a href="data:file/csv;base64,{b64_b}" download="PatientSample_2.csv">Download Sample Patient File (Low Risk)</a>'
+            st.markdown(href2, unsafe_allow_html=True)
+            
+            uploaded_file = st.file_uploader("This app only accepts .csv files.", type=["csv"])
+            
+            if uploaded_file is not None:
+                df = pd.read_csv(uploaded_file)
+                st.dataframe(df)
+
+                s = f"""
+                <style>
+                div.stButton > button:first-child {{ background-color: #04AA6D;color: white; padding: 12px 20px;border: none;border-radius: 4px;cursor: pointer; }}
+                <style>
+                """
+                st.markdown(s, unsafe_allow_html=True)
+                if st.button("Predict"):
+
+                    #X=df.drop( ['death_from_cancer', 'overall_survival'], axis=1)
+                    TestData = np.asarray(df).astype(np.float32)
+                    prediction = model.predict(TestData)
+                    pred = '{0:.{1}f}'.format(prediction[0][0],2)
+                    output = float(pred)            
+                    st.success('The probability of survival is {}'.format(output))
+
+                    if output > .5:
+                        st.markdown(death_html, unsafe_allow_html=True)
+                    else:
+                        st.markdown(living_html, unsafe_allow_html=True)    
+
+            help_html = """
+            <div style="background-color:#025246 ;padding:20px">
+            <h5 style="color:white;;text-align:center;">How do I use this?</h5>
+            <p style="color:white">This option takes in a patient's entire clinical and genetic data as a .csv file.</p>
+            <p style="color:white">Sample patient data have been provided to serve as examples for dataset formatting and uploading.</p>
+            </div>
+                """   
+            st.markdown(help_html, unsafe_allow_html=True)            
 
 
         
