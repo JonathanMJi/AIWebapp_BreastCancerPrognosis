@@ -30,7 +30,7 @@ def predict_survival(age_at_diagnosis, overall_survival_months, lymph_nodes_exam
     return float(pred)
 
 def draw_plot():
-            df = pd.read_csv('METABRIC_RNA_Mutation_Signature_Preprocessed.csv', delimiter=',')
+            df = pd.read_csv('METABRIC_RNA_Mutation_Signature3_Preprocessed.csv', delimiter=',')
             #features_to_drop = df.columns[52:]
             #df = df.drop(features_to_drop, axis=1)
             #all_categorical_columns = df.select_dtypes(include=['object']).columns.tolist()
@@ -285,7 +285,7 @@ def main():
         """
         st.markdown(html_temp, unsafe_allow_html=True)
 
-        df=pd.read_csv("METABRIC_RNA_Mutation_Signature.csv")
+        df=pd.read_csv("METABRIC_RNA_Mutation_Signature3.csv")
         st.markdown("", unsafe_allow_html=True)
         st.dataframe(df,1000,200)
 
