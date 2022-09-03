@@ -1,4 +1,4 @@
-Web Tool Design 
+Web App Design 
 
 The CNN model shows convincing result and has high accuracy and is ready to be used as a systematic framework for real time prediction by end users. To make it user friendly, I designed and developed a web application for the predicting breast cancer survival rate using streamlit,  an open-source python framework for building web apps for Machine Learning and Data Science.
 
