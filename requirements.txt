@@ -8,4 +8,4 @@ tensorflow-estimator==2.6.0
 click==8.0.4
 streamlit-option-menu==0.3.2
 protobuf~=3.19.0
-numpy==1.19.2
+numpy~=1.20.2
